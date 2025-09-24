@@ -17,24 +17,18 @@ void Material::Draw() {
 
 std::array<std::string, 8> Material::getNeighbors() {
     std::array<std::string, 8> neighbors;
-    std::array<Point, 8> points = {
-        Point(position.x - 1, position.y - 1),
-        Point(position.x, position.y - 1),
-        Point(position.x + 1, position.y - 1),
-        Point(position.x - 1, position.y),
-        Point(position.x + 1, position.y),
-        Point(position.x - 1, position.y + 1),
-        Point(position.x, position.y + 1),
-        Point(position.x + 1, position.y + 1)
-    };
+    
+    const int dx[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+    const int dy[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+
     for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < Global::materials.size(); j++) {
-            if (Global::materials[j]->position == points[i]) {
-                neighbors[i] = Global::materials[j]->type;
-            }
-        }
-        if (points[i].x < 0 || points[i].x >= Global::WIDTH/Global::GRID_SIZE || points[i].y < 0 || points[i].y >= Global::HEIGHT/Global::GRID_SIZE) {
+        int nx = position.x + dx[i];
+        int ny = position.y + dy[i];
+
+        if (nx < 0 || nx >= Global::gridDimenstion.x || ny < 0 || ny >= Global::gridDimenstion.y) {
             neighbors[i] = "void";
+        } else {
+            neighbors[i] = Global::materialGrid[ny][nx];
         }
     }
     return neighbors;

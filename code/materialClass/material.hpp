@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 #include <array>
 #include <string>
+#include <memory>
 
 class Material {
     public:
@@ -17,6 +18,7 @@ class Material {
     void Draw();
     std::array<std::string, 8> getNeighbors();
     virtual void Move();
+    virtual std::unique_ptr<Material> clone() const = 0;
 };
 
 #endif
