@@ -8,10 +8,12 @@
 #include <map>
 #include <algorithm>
 #include <cstdint>
+#include <iostream>
 
 #include "../materialClass/sand/sand.hpp"
 #include "../materialClass/water/water.hpp"
 #include "../materialClass/stone/stone.hpp"
+#include "../materialClass/metal/metal.hpp"
 
 #include "../buttonClass/button.hpp"
 
@@ -36,6 +38,7 @@ class Global {
         static Sand voidMaterial;
         static Sand nullMaterial;
         static int timer;
+        static int materialIndex;
         static std::map<std::string, std::unique_ptr<Material>> prototypeMaterials;
         static std::string currentMaterial;
         static std::vector<Button> buttons;
@@ -55,9 +58,12 @@ class Global {
     static void drawGrid(SDL_Color color);
     static void drawRect(SDL_Color color, float x, float y, float width, float height, bool fill = true);
     static void addMaterialToMouse(int xPos, int yPos);
+    static void removeMaterialFromMouse(int xPos, int yPos);
     static void drawMaterials();
     static void moveMaterials();
+    static void moveMaterial(int index);
     static void drawButtons();
+    static void updateGrid();
 };
 
 #endif

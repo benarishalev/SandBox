@@ -1,1 +1,1 @@
-make game -static -console run code/GLOBALS/*.cpp code/materialClass/*.cpp code/pointClass/*.cpp code/materialClass/water/*.cpp code/materialClass/sand/*.cpp code/materialClass/stone/*.cpp code/buttonClass/*.cpp
+make game -static -console run code/GLOBALS/*.cpp code/materialClass/*.cpp code/pointClass/*.cpp code/materialClass/water/*.cpp code/materialClass/sand/*.cpp code/materialClass/stone/*.cpp code/buttonClass/*.cpp code/materialClass/metal/*.cpp

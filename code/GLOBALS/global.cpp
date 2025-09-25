@@ -19,6 +19,7 @@ std::vector<std::vector<Material*>> Global::materialGrid;
 Sand Global::voidMaterial(Point(-1, -1));
 Sand Global::nullMaterial(Point(-1, -1));
 int Global::timer = 0;
+int Global::materialIndex = 0;
 std::map<std::string, std::unique_ptr<Material>> Global::prototypeMaterials;
 std::string Global::currentMaterial = "water";
 std::vector<Button> Global::buttons;
@@ -34,6 +35,7 @@ void Global::init(const int width, const int height) {
     prototypeMaterials["sand"] = std::make_unique<Sand>(Point(0, 0));
     prototypeMaterials["water"] = std::make_unique<Water>(Point(0, 0));
     prototypeMaterials["stone"] = std::make_unique<Stone>(Point(0, 0));
+    prototypeMaterials["metal"] = std::make_unique<Metal>(Point(0, 0));
 
     // init buttons
     int x = 0;
@@ -84,6 +86,18 @@ void Global::runLoop() {
     quit();
 }
 
+void Global::removeMaterialFromMouse(int xPos, int yPos) {
+    int idxX = (int)(xPos/GRID_SIZE);
+    int idxY = (int)(yPos/GRID_SIZE);
+
+    materials.erase(std::remove_if(materials.begin(), materials.end(), [&](const std::unique_ptr<Material>& material) {
+        return material.get() == materialGrid[idxY][idxX];
+    }), materials.end());
+
+    materialGrid[idxY][idxX] = &nullMaterial;
+    // reset to zero so i wont update something that doesnt exist
+    materialIndex = 0;
+}
 
 void Global::addMaterialToMouse(int xPos, int yPos) {
     int idxX = (int)(xPos/GRID_SIZE);
@@ -96,8 +110,11 @@ void Global::addMaterialToMouse(int xPos, int yPos) {
             }
             std::unique_ptr<Material> material = prototypeMaterials[currentMaterial]->clone();
             material->position = Point(x, y);
-            materials.push_back(std::move(material));
-            materialGrid[y][x] = materials.back().get();
+            // add material if not already there
+            if (materialGrid[y][x]->type == "null") {
+                materials.push_back(std::move(material));
+                materialGrid[y][x] = materials.back().get();
+            }
         }
     }
 }
@@ -134,6 +151,23 @@ void Global::moveMaterials() {
     }
 }
 
+void Global::moveMaterial(int index) {
+    materialGrid[materials[index]->position.y][materials[index]->position.x] = &nullMaterial;
+    materials[index]->Move();
+    Global::materialGrid[Global::materials[index]->position.y][Global::materials[index]->position.x] = Global::materials[index].get();
+}
+
+void Global::updateGrid() {
+    for (int y = 0; y < gridDimenstion.y; y++) {
+        for (int x = 0; x < gridDimenstion.x; x++) {
+            materialGrid[y][x] = &nullMaterial;
+        }
+    }
+    for (int i = 0; i < materials.size(); i++) {
+        materialGrid[materials[i]->position.y][materials[i]->position.x] = materials[i].get();
+    }
+}
+
 void Global::setMousePosition() {
     float x, y;
     SDL_GetMouseState(&x, &y);
@@ -161,6 +195,7 @@ void Global::runGameLoop() {
     bool running = true;
 
     timer = 0;
+    materialIndex = 0;
 
     while (running) {
         while (SDL_PollEvent(&event)) {
@@ -169,7 +204,11 @@ void Global::runGameLoop() {
                 mode = "quit";
             }
             if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
-                addMaterialToMouse(mousePosition.x, mousePosition.y);
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    addMaterialToMouse(mousePosition.x, mousePosition.y);
+                } else if (event.button.button == SDL_BUTTON_RIGHT) {
+                    removeMaterialFromMouse(mousePosition.x, mousePosition.y);
+                }
 
                 for (auto& button : buttons) {
                     if (button.isHover()) {
@@ -181,8 +220,8 @@ void Global::runGameLoop() {
 
         timer++;
         if (timer >= gameSpeed) {
-            moveMaterials();
             timer = 0;
+            moveMaterials();
         }
 
         setMousePosition();
