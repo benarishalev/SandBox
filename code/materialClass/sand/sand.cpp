@@ -3,16 +3,16 @@
 Sand::Sand(Point position) : Material(position, {255, 128, 30, 255}, "sand") {}
 
 void Sand::Move() {
-    std::array<std::string, 8> neighbors = getNeighbors();
-    if (neighbors[6] == "") {
+    std::array<Material*, 8> neighbors = getNeighbors();
+    if (neighbors[6]->type == "null") {
         position.y += 1;
-    } else if (neighbors[5] == "") {
+    } else if (neighbors[5]->type == "null") {
         position.y += 1;
         position.x -= 1;
-    } else if (neighbors[7] == "") {
+    } else if (neighbors[7]->type == "null") {
         position.y += 1;
         position.x += 1;
-    } else if (neighbors[6] == "water") {
+    } else if (neighbors[6]->type == "water") {
         position.y += 1;
     }
 }

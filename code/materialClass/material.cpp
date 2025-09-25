@@ -15,8 +15,8 @@ void Material::Draw() {
     Global::drawRect(this->color, position.x * Global::GRID_SIZE, position.y * Global::GRID_SIZE, Global::GRID_SIZE, Global::GRID_SIZE, true);
 }
 
-std::array<std::string, 8> Material::getNeighbors() {
-    std::array<std::string, 8> neighbors;
+std::array<Material*, 8> Material::getNeighbors() {
+    std::array<Material*, 8> neighbors;
     
     const int dx[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
     const int dy[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
@@ -26,7 +26,7 @@ std::array<std::string, 8> Material::getNeighbors() {
         int ny = position.y + dy[i];
 
         if (nx < 0 || nx >= Global::gridDimenstion.x || ny < 0 || ny >= Global::gridDimenstion.y) {
-            neighbors[i] = "void";
+            neighbors[i] = &Global::voidMaterial;
         } else {
             neighbors[i] = Global::materialGrid[ny][nx];
         }

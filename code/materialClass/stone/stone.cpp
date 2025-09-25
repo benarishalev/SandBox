@@ -3,8 +3,8 @@
 Stone::Stone(Point position) : Material(position, {100, 100, 100, 255}, "stone") {}
 
 void Stone::Move() {
-    std::array<std::string, 8> neighbors = getNeighbors();
-    if (neighbors[6] == "") {
+    std::array<Material*, 8> neighbors = getNeighbors();
+    if (neighbors[6]->type == "null") {
         position.y += 1;
     }
 }

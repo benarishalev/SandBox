@@ -15,7 +15,9 @@ Point Global::gridDimenstion = Point(30, 30);
 int Global::gameSpeed = 50;
 int Global::spawnSize = 2;
 std::vector<std::unique_ptr<Material>> Global::materials;
-std::vector<std::vector<std::string>> Global::materialGrid;
+std::vector<std::vector<Material*>> Global::materialGrid;
+Sand Global::voidMaterial(Point(-1, -1));
+Sand Global::nullMaterial(Point(-1, -1));
 int Global::timer = 0;
 std::map<std::string, std::unique_ptr<Material>> Global::prototypeMaterials;
 std::string Global::currentMaterial = "water";
@@ -43,9 +45,14 @@ void Global::init(const int width, const int height) {
     }
 
     // init material grid
+    voidMaterial.type = "void";
+    nullMaterial.type = "null";
     materialGrid.resize(gridDimenstion.y);
     for (int i = 0; i < gridDimenstion.y; i++) {
         materialGrid[i].resize(gridDimenstion.x);
+        for (int j = 0; j < gridDimenstion.x; j++) {
+            materialGrid[i][j] = &nullMaterial;
+        }
     }
 }
 
@@ -87,10 +94,10 @@ void Global::addMaterialToMouse(int xPos, int yPos) {
             if (x < 0 || x >= gridDimenstion.x || y < 0 || y >= gridDimenstion.y) {
                 continue;
             }
-            std::unique_ptr<Material> material = prototypeMaterials[currentMaterial]->clone();\
+            std::unique_ptr<Material> material = prototypeMaterials[currentMaterial]->clone();
             material->position = Point(x, y);
             materials.push_back(std::move(material));
-            materialGrid[y][x] = currentMaterial;
+            materialGrid[y][x] = materials.back().get();
         }
     }
 }
@@ -121,9 +128,9 @@ void Global::drawMaterials() {
 
 void Global::moveMaterials() {
     for (int i = 0; i < materials.size(); i++) {
-        materialGrid[materials[i]->position.y][materials[i]->position.x] = "";
+        materialGrid[materials[i]->position.y][materials[i]->position.x] = &nullMaterial;
         materials[i]->Move();
-        materialGrid[materials[i]->position.y][materials[i]->position.x] = materials[i]->type;
+        materialGrid[materials[i]->position.y][materials[i]->position.x] = materials[i].get();
     }
 }
 

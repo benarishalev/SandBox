@@ -32,7 +32,9 @@ class Global {
         static int gameSpeed;
         static int spawnSize;
         static std::vector<std::unique_ptr<Material>> materials;
-        static std::vector<std::vector<std::string>> materialGrid;
+        static std::vector<std::vector<Material*>> materialGrid;
+        static Sand voidMaterial;
+        static Sand nullMaterial;
         static int timer;
         static std::map<std::string, std::unique_ptr<Material>> prototypeMaterials;
         static std::string currentMaterial;

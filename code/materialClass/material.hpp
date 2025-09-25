@@ -16,7 +16,7 @@ class Material {
     Material(Point position, SDL_Color color, std::string type);
     Material();
     void Draw();
-    std::array<std::string, 8> getNeighbors();
+    std::array<Material*, 8> getNeighbors();
     virtual void Move();
     virtual std::unique_ptr<Material> clone() const = 0;
 };
