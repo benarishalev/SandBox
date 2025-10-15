@@ -7,10 +7,10 @@ void Water::Move() {
 
     if (neighbors[6]->type == "null") {
         position.y += 1;
-    } else if (neighbors[6]->type == "null" && neighbors[5]->type == "null") {
+    } else if (neighbors[5]->type == "null") {
         position.y += 1;
         position.x -= 1;
-    } else if (neighbors[6]->type == "null" && neighbors[7]->type == "null") {
+    } else if (neighbors[7]->type == "null") {
         position.y += 1;
         position.x += 1;
     } else if (neighbors[3]->type == "null" && neighbors[4]->type == "null") {

@@ -63,7 +63,6 @@ class Global {
     static void moveMaterials();
     static void moveMaterial(int index);
     static void drawButtons();
-    static void updateGrid();
 };
 
 #endif

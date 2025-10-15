@@ -10,10 +10,12 @@ std::string Global::mode = "gameloop";
 Point Global::mousePosition = Point(0, 0);
 
 // gameloop
-int Global::GRID_SIZE = 40;
-Point Global::gridDimenstion = Point(30, 30);
-int Global::gameSpeed = 50;
-int Global::spawnSize = 2;
+int Global::GRID_SIZE = 1;
+int Global::gameSpeed = 0;
+int Global::spawnSize = 20;
+
+
+Point Global::gridDimenstion = Point(0, 0);
 std::vector<std::unique_ptr<Material>> Global::materials;
 std::vector<std::vector<Material*>> Global::materialGrid;
 Sand Global::voidMaterial(Point(-1, -1));
@@ -29,7 +31,9 @@ void Global::init(const int width, const int height) {
     WIDTH = width;
     HEIGHT = height;
     window = SDL_CreateWindow("SandBox", WIDTH, HEIGHT, 0); 
-    renderer = SDL_CreateRenderer(window, 0);
+    renderer = SDL_CreateRenderer(window, nullptr);
+
+    Global::gridDimenstion = Point((WIDTH-300)/GRID_SIZE, HEIGHT/GRID_SIZE);
 
     // init prototype materials
     prototypeMaterials["sand"] = std::make_unique<Sand>(Point(0, 0));
@@ -157,17 +161,6 @@ void Global::moveMaterial(int index) {
     Global::materialGrid[Global::materials[index]->position.y][Global::materials[index]->position.x] = Global::materials[index].get();
 }
 
-void Global::updateGrid() {
-    for (int y = 0; y < gridDimenstion.y; y++) {
-        for (int x = 0; x < gridDimenstion.x; x++) {
-            materialGrid[y][x] = &nullMaterial;
-        }
-    }
-    for (int i = 0; i < materials.size(); i++) {
-        materialGrid[materials[i]->position.y][materials[i]->position.x] = materials[i].get();
-    }
-}
-
 void Global::setMousePosition() {
     float x, y;
     SDL_GetMouseState(&x, &y);
@@ -229,7 +222,7 @@ void Global::runGameLoop() {
         cleanWindow();
 
         drawMaterials();
-        drawGrid({50, 50, 50, 255});
+        //drawGrid({50, 50, 50, 255});
         drawButtons();
 
         presentWindow();
